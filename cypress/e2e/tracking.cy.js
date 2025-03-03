@@ -19,6 +19,44 @@ describe('Consulta de Encomenda no Chat', () => {
         cy.verificarMensagem('Perfeito! Estou consultando as informações nos Correios... Só um instante. 📦🔍')
         cy.verificarMensagem('Boa notícia! Sua encomenda já foi entregue com sucesso. 🎉 Se precisar de algo mais, é só me chamar!', 10000)
     })
+
+    it('Deve indicar que a encomenda está a caminho', () => {
+        cy.abrirChatBot()
+        cy.verificarMensagem('Olá! Tudo bem? Posso te ajudar a consultar o status da sua encomenda?')
+        cy.selecionarOpcao('Sim, por favor!')
+        cy.verificarMensagem('Ótimo! Por favor, digite o código de rastreio da sua encomenda:')
+        cy.enviarMensagem(trackingCode.despachada)
+        cy.verificarMensagem(`Confirmando: você informou o código de rastreio ${trackingCode.despachada}. Está tudo certo?`)
+        cy.selecionarOpcao('Sim, está certo!')
+        cy.verificarMensagem('Perfeito! Estou consultando as informações nos Correios... Só um instante. 📦🔍')
+        cy.verificarMensagem('A sua encomenda já foi despachada e está a caminho! 🚚', 10000)
+    })
+
+    it('Deve indicar que a encomenda está em rota de entrega', () => {
+        cy.abrirChatBot()
+        cy.verificarMensagem('Olá! Tudo bem? Posso te ajudar a consultar o status da sua encomenda?')
+        cy.selecionarOpcao('Sim, por favor!')
+        cy.verificarMensagem('Ótimo! Por favor, digite o código de rastreio da sua encomenda:')
+        cy.enviarMensagem(trackingCode.emRota)
+        cy.verificarMensagem(`Confirmando: você informou o código de rastreio ${trackingCode.emRota}. Está tudo certo?`)
+        cy.selecionarOpcao('Sim, está certo!')
+        cy.verificarMensagem('Perfeito! Estou consultando as informações nos Correios... Só um instante. 📦🔍')
+        cy.verificarMensagem('Ótima notícia! Sua encomenda está em rota de entrega e chega ainda hoje. Fique de olho! 👀📦', 10000)
+    })
+
+    it('Deve indicar que a encomenda não foi encontrada', () => {
+        cy.abrirChatBot()
+        cy.verificarMensagem('Olá! Tudo bem? Posso te ajudar a consultar o status da sua encomenda?')
+        cy.selecionarOpcao('Sim, por favor!')
+        cy.verificarMensagem('Ótimo! Por favor, digite o código de rastreio da sua encomenda:')
+        cy.enviarMensagem(trackingCode.naoEncontrado)
+        cy.verificarMensagem(`Confirmando: você informou o código de rastreio ${trackingCode.naoEncontrado}. Está tudo certo?`)
+        cy.selecionarOpcao('Sim, está certo!')
+        cy.verificarMensagem('Perfeito! Estou consultando as informações nos Correios... Só um instante. 📦🔍')
+        cy.verificarMensagem('Hmm... Não encontrei uma encomenda com os dados informados.', 10000)
+        cy.selecionarOpcao('Encerrar atendimento')
+        cy.verificarMensagem('Obrigado por falar comigo! 😊 Se precisar de mais alguma coisa, é só chamar.')
+    })
 })
 
 Cypress.Commands.add('abrirChatBot', () => {
